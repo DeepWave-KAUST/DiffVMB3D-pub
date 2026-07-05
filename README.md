@@ -7,9 +7,12 @@
 
 ## Overview
 
-Three-dimensional (3D) velocity model building (VMB) is essential for seismic imaging but remains computationally prohibitive for deep-learning approaches that operate directly in 3D. DiffVMB3D addresses this challenge by reformulating 3D VMB as a 2D generative diffusion problem through a **depth-as-channel** representation: the depth dimension of each 3D velocity patch is mapped to the channel dimension of a standard 2D U-Net, eliminating the need for 3D convolutions entirely.
+<p align="justify">Three-dimensional (3D) velocity model building (VMB) is essential for seismic imaging but remains computationally prohibitive for deep-learning approaches that operate directly in 3D. DiffVMB3D addresses this challenge by reformulating 3D VMB as a 2D generative diffusion problem through a **depth-as-channel** representation: the depth dimension of each 3D velocity patch is mapped to the channel dimension of a standard 2D U-Net, eliminating the need for 3D convolutions entirely.
 
 The method builds velocity models progressively from shallow to deep via a **depth-progressive recursive inference** procedure. Starting from a known or estimated shallow velocity, the diffusion model generates successively deeper patches, with each prediction conditioned on the previously generated (shallower) patch. The network accepts multiple optional conditioning inputs, like structural attributes (e.g., seismic images) and well-log velocities, which are handled gracefully through **classifier-free guidance** training. Overlapping patches are merged using a **depth-attenuated Gaussian blending** scheme that accounts for the recursive error propagation inherent in the top-down generation strategy.
+</p>
+<div align="center">
+
 
 ## Project structure
 
