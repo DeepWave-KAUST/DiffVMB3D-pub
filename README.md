@@ -113,4 +113,4 @@ This implementation is motivated by the paper [Improved Denoising Diffusion Prob
 
 ## Cite us
 
-DW0116 — Cheng, S., Harsuko, R., Taufik, M. H., and Alkhalifah, T. (2025). Depth-progressive 3D seismic velocity model building via 2D generative diffusion models.
+Cheng, S., Harsuko, R., Taufik, M. H., and Alkhalifah, T. (2025). Depth-progressive 3D seismic velocity model building via 2D generative diffusion models.
