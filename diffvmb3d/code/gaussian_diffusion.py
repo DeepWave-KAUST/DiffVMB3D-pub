@@ -551,7 +551,7 @@ class GaussianDiffusion:
 
     def p_sample(
         self, model, x, cond_top, struc, db, well, well_loc, well_mask, t,
-        scale_factor=None, weight_t=None, clip_denoised=True, denoised_fn=None, model_kwargs=None
+        scale_factor=None, clip_denoised=True, denoised_fn=None, model_kwargs=None
     ):
         """
         Perform a single DDPM reverse step: sample x_{t-1} from x_t.
@@ -575,8 +575,6 @@ class GaussianDiffusion:
             well_mask:      Binary mask for the well location.
             t:              Current timestep indices. Shape: [B].
             scale_factor:   If not None, strength of well-log gradient guidance.
-            weight_t:       ᾱ_t used to scale the guidance gradient magnitude
-                            (larger at low noise, smaller at high noise).
             clip_denoised:  If True, clip predicted x_0 to [-1, 1].
             denoised_fn:    Optional function applied to x_0 before sampling.
             model_kwargs:   Additional keyword arguments for the model.
@@ -613,7 +611,7 @@ class GaussianDiffusion:
         # well consistency by following the negative gradient of the well loss.
         if scale_factor is not None:
             cond_grad, _ = self.well_guidance(sample, well, well_mask)
-            sample = sample - 0.5 * scale_factor * math.sqrt(weight_t) * cond_grad
+            sample = sample - scale_factor * th.exp(0.5 * out["log_variance"]) * cond_grad
             loss_after = self.well_loss(sample, well, well_mask)
 
         # Print well guidance monitoring at every 5th timestep and the final step.
@@ -729,10 +727,6 @@ class GaussianDiffusion:
         loss_after = []     # Well loss after guidance at each step
         for i in indices:
             t = th.tensor([i] * shape[0], device=device)
-            # weight_t = ᾱ_{T-i-1}: used to modulate well guidance strength.
-            # Higher weight at cleaner steps ensures stronger guidance when the
-            # signal-to-noise ratio is higher.
-            weight_t = self.alphas_cumprod[self.num_timesteps - i - 1]
             with th.no_grad():
                 out = self.p_sample(
                     model,
@@ -740,7 +734,6 @@ class GaussianDiffusion:
                     cond_top, struc, db, well, well_loc, well_mask,
                     t,
                     scale_factor=scale_factor,
-                    weight_t=weight_t,
                     clip_denoised=clip_denoised,
                     denoised_fn=denoised_fn,
                     model_kwargs=model_kwargs,
@@ -772,7 +765,7 @@ class GaussianDiffusion:
         x,
         cond_top, struc, db, well, well_loc, well_mask,
         t,
-        scale_factor=None, weight_t=None,
+        scale_factor=None, 
         clip_denoised=True,
         denoised_fn=None,
         model_kwargs=None,
@@ -802,7 +795,6 @@ class GaussianDiffusion:
             well_mask:      Binary mask for the well location.
             t:              Current timestep indices. Shape: [B].
             scale_factor:   If not None, strength of well gradient guidance.
-            weight_t:       ᾱ_t for scaling the guidance gradient.
             clip_denoised:  If True, clip predicted x_0 to [-1, 1].
             denoised_fn:    Optional function applied to x_0 predictions.
             model_kwargs:   Additional keyword arguments for the model.
@@ -856,7 +848,7 @@ class GaussianDiffusion:
         # Optional well-log gradient guidance (same as in p_sample).
         if scale_factor is not None:
             cond_grad, _ = self.well_guidance(sample, well, well_mask)
-            sample = sample - 0.5 * scale_factor * math.sqrt(weight_t) * cond_grad
+            sample = sample - scale_factor * th.exp(0.5 * out["log_variance"]) * cond_grad
             loss_after = self.well_loss(sample, well, well_mask)
 
         if (t[0].item() + 1) % 5 == 0 or t[0].item() == 0:
@@ -965,8 +957,6 @@ class GaussianDiffusion:
         loss_after = []     # Well loss after guidance at each step
         for i in indices:
             t = th.tensor([i] * shape[0], device=device)
-            # weight_t = ᾱ_{T-i-1}: modulates well guidance strength.
-            weight_t = self.alphas_cumprod[self.num_timesteps - i - 1]
             with th.no_grad():
                 out = self.ddim_sample(
                         model,
@@ -974,7 +964,6 @@ class GaussianDiffusion:
                         cond_top, struc, db, well, well_loc, well_mask,
                         t,
                         scale_factor=scale_factor,
-                        weight_t=weight_t,
                         clip_denoised=clip_denoised,
                         denoised_fn=denoised_fn,
                         model_kwargs=model_kwargs,
