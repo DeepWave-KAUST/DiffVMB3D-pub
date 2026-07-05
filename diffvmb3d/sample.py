@@ -427,7 +427,7 @@ def create_argparser():
         clip_denoised=True,       # Clamp x_0 predictions to [-1, 1]
         use_ddim=True,            # Use DDIM sampling (10-step default)
         batch_size=50,            # Ensemble size for mean/std estimation
-        model_path="./checkpoints/trained_model.pt",  # Trained EMA checkpoint
+        model_path="../checkpoints/trained_model.pt",  # Trained EMA checkpoint
         width_size=128,           # Lateral patch size (ny = nx)
         dt=1e-3,                  # Placeholder (unused)
         use_well=False,           # Well-log conditioning flag
