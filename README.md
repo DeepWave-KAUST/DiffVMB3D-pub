@@ -12,7 +12,7 @@
 The method builds velocity models progressively from shallow to deep via a **depth-progressive recursive inference** procedure. Starting from a known or estimated shallow velocity, the diffusion model generates successively deeper patches, with each prediction conditioned on the previously generated (shallower) patch. The network accepts multiple optional conditioning inputs, like structural attributes (e.g., seismic images) and well-log velocities, which are handled gracefully through **classifier-free guidance** training. Overlapping patches are merged using a **depth-attenuated Gaussian blending** scheme that accounts for the recursive error propagation inherent in the top-down generation strategy.
 </p>
 <div align="center">
-
+</div>
 
 ## Project structure
 
