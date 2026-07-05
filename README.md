@@ -13,10 +13,6 @@ The method builds velocity models progressively from shallow to deep via a **dep
 
 Compared to a 3D U-Net baseline using the same depth-progressive strategy, the proposed 2D formulation achieves approximately **2.8× parameter reduction** and **30× inference speedup**, while producing comparable or superior velocity predictions across four benchmark 3D velocity models (Overthrust, SEAM Arid, SEG/EAGE Salt, and Marmousi).
 
-<div align="center">
-<img src="./asset/architecture.png" alt="DiffVMB3D Architecture" width="90%">
-</div>
-
 ## Project structure
 
 This repository is organized as follows:
@@ -27,9 +23,7 @@ This repository is organized as follows:
 
 ## Supplementary files
 
-To ensure reproducibility, we provide the synthetic dataset for training and testing, as well as our trained model weights on Zenodo:
-
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21206427.svg)](https://doi.org/10.5281/zenodo.21206427)
+To ensure reproducibility, we provide the synthetic dataset for training and testing, as well as our trained model weights on Zenodo.
 
 ### Training and testing dataset
 
